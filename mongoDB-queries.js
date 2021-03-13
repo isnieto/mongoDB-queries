@@ -18,31 +18,37 @@ db.restaurant.find( { 'grades.score': { $gte: 90 } } ).pretty()
 db.restaurant.find( { 'grades.score': { $lte: 100 }, 'grades.score': { $gte: 80} } )
 
 // 10. Escriu una consulta per trobar els restaurants quins localitzen en valor de latitud menys que -95.754168
-
-// 11. Escriu una consulta de MongoDB per a trobar els restaurants que no preparen cap cuisine de 'American' i el seu puntaje de qualificació superior a 70 i latitud inferior a -65.754168
-
-// 12. Escriu una consulta per trobar els restaurants quins no preparen cap cuisine de 'American' i va aconseguir un marcador més que 70 i localitzat en la longitud menys que -65.754168. Nota : Fes aquesta consulta sense utilitzar $and operador
-
-// 13. Escriu una consulta per trobar els restaurants quins no preparen cap cuisine de 'American ' i va aconseguir un punt de grau 'A' no pertany a Brooklyn. S'ha de mostrar el document segons la cuisine en ordre descendent
+db.restaurant.find( { 'address.coord.0': {$lt: -95.754168}  } )
+// 11. Escriu una consulta de MongoDB per a trobar els restaurants que no preparen cap cuisine de 
+//'American' i el seu puntaje de qualificació superior a 70 i latitud inferior a -65.754168
+db.restaurant.find( { 'cuisine' : 'American ', 'grades.score': { $gt: 70 },  'address.coord.0': {$lt: -65.754168} } ).limit(1).pretty()
+// 12. Escriu una consulta per trobar els restaurants quins no preparen cap cuisine de 'American'
+// i va aconseguir un marcador més que 70 i localitzat en la longitud menys que -65.754168. 
+// Nota : Fes aquesta consulta sense utilitzar $and operador
+db.restaurant.find( {'cuisine' : { $ne: 'American '}, 'grades.score': { $gt: 70 },  'address.coord.0': {$lt: -65.754168}  } )
+// 13. Escriu una consulta per trobar els restaurants quins no preparen cap cuisine de 'American ' i va aconseguir un punt de grau
+// 'A' no pertany a Brooklyn. S'ha de mostrar el document segons la cuisine en ordre descendent
+db.restaurant.find( {'cuisine' : { $ne: 'American '},  'borough':{$ne: 'Brooklyn'} , 'grades.grade': { $eq: 'A' }  } )
 // 14. Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants quin contenir 'Wil' com les tres primeres lletres en el seu nom
+db.restaurant.find({'name':{$regex: /^Wil/}}, {'restaurant_id': 1, 'name': 1, 'borough':1, 'cuisine': 1})
 // 15. Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants quin contenir 'ces' com les últim tres lletres en el seu nom
-// Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants quin contenir 'Reg' com tres lletres en algun lloc en el seu nom
-// Escriu una consulta per trobar els restaurants quins pertanyen al Bronx i va preparar qualsevol plat American o xinès
-// Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que pertanyen a Staten Island o Queens o Bronxor Brooklyn
-// Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que no pertanyen a Staten Island o Queens o Bronxor Brooklyn
-// Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que aconsegueixin un marcador quin no és més que 10
-// Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que preparen peix excepte 'American' i 'Chinees' o el name del restaurant comença amb lletres 'Wil'
-// Escriu una consulta per trobar el restaurant_id, name, i grades per a aquells restaurants que aconsegueixin un grau "A" i un score 11 en dades d'estudi ISODate "2014-08-11T00:00:00Z"
-// Escriu una consulta per trobar el restaurant_id, name i grades per a aquells restaurants on el 2n element de varietat de graus conté un grau de "A" i marcador 9 sobre un ISODate "2014-08-11T00:00:00Z"
-// Escriu una consulta per trobar el restaurant_id, name, adreça i ubicació geogràfica per a aquells restaurants on el segon element del array coord conté un valor quin és més que 42 i fins a 52
-// Escriu una consulta per organitzar el nom dels restaurants en ordre ascendent juntament amb totes les columnes
-// Escriu una consulta per organitzar el nom dels restaurants en descendir juntament amb totes les columnes
-// Escriu una consulta a organitzar el nom de la cuisine en ordre ascendent i per el mateix barri de cuisine. Ordre descendint
-// Escriu una consulta per saber tant si totes les direccions contenen el carrer o no
-// Escriu una consulta quin seleccionarà tots el documents en la col·lecció de restaurants on el valor del camp coord és Double
-// Escriu una consulta quin seleccionarà el restaurant_id, name i grade per a aquells restaurants quins retorns 0 com a resta després de dividir el marcador per 7
-// Escriu una consulta per trobar el name de restaurant, borough, longitud i altitud i cuisine per a aquells restaurants que contenen 'mon' com tres lletres en algun lloc del seu name
-// Escriu una consulta per trobar el name de restaurant, borough, longitud i latitud i cuisine per a aquells restaurants que conteinen 'Mad' com primeres tres lletres del seu name
-// Nivell 1
-// Certificarás el teu nivell 1 si construeixes 17 consultes correctes
-
+db.restaurant.find({'name':{$regex: /ces$/}}, {'restaurant_id': 1, 'name': 1, 'borough':1, 'cuisine': 1})
+// 16. Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants quin contenir 'Reg' com tres lletres en algun lloc en el seu nom
+db.restaurant.find({'name':{$regex: /Reg/}}, {'restaurant_id': 1, 'name': 1, 'borough':1, 'cuisine': 1})
+// 17. Escriu una consulta per trobar els restaurants quins pertanyen al Bronx i va preparar qualsevol plat American o xinès
+db.restaurant.find({$and: [{'borough': 'Bronx'}, {$or: [{'cuisine': 'American '},{'cuisine': 'Chinese'}]} ]})
+// 18. Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que pertanyen a Staten Island o Queens o Bronxor Brooklyn
+// 19. Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que no pertanyen a Staten Island o Queens o Bronxor Brooklyn
+// 20. Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que aconsegueixin un marcador quin no és més que 10
+// 21. Escriu una consulta per trobar el restaurant_id, name, borough i cuisine per a aquells restaurants que preparen peix excepte 'American' i 'Chinees' o el name del restaurant comença amb lletres 'Wil'
+// 22. Escriu una consulta per trobar el restaurant_id, name, i grades per a aquells restaurants que aconsegueixin un grau "A" i un score 11 en dades d'estudi ISODate "2014-08-11T00:00:00Z"
+// 23. Escriu una consulta per trobar el restaurant_id, name i grades per a aquells restaurants on el 2n element de varietat de graus conté un grau de "A" i marcador 9 sobre un ISODate "2014-08-11T00:00:00Z"
+// 24. Escriu una consulta per trobar el restaurant_id, name, adreça i ubicació geogràfica per a aquells restaurants on el segon element del array coord conté un valor quin és més que 42 i fins a 52
+// 25. Escriu una consulta per organitzar el nom dels restaurants en ordre ascendent juntament amb totes les columnes
+// 26. Escriu una consulta per organitzar el nom dels restaurants en descendir juntament amb totes les columnes
+// 27. Escriu una consulta a organitzar el nom de la cuisine en ordre ascendent i per el mateix barri de cuisine. Ordre descendint
+// 28. Escriu una consulta per saber tant si totes les direccions contenen el carrer o no
+// 29. Escriu una consulta quin seleccionarà tots el documents en la col·lecció de restaurants on el valor del camp coord és Double
+// 30. Escriu una consulta quin seleccionarà el restaurant_id, name i grade per a aquells restaurants quins retorns 0 com a resta després de dividir el marcador per 7
+// 31. Escriu una consulta per trobar el name de restaurant, borough, longitud i altitud i cuisine per a aquells restaurants que contenen 'mon' com tres lletres en algun lloc del seu name
+// 32. Escriu una consulta per trobar el name de restaurant, borough, longitud i latitud i cuisine per a aquells restaurants que conteinen 'Mad' com primeres tres lletres del seu name
